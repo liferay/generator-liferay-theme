@@ -66,11 +66,9 @@ var layoutGeneratorPrototype = _.merge(liferayThemeGeneratorPrototype, {
 		var thumbnailDestination = this.themeLayout ? this.thumbnailFilename : path.join('docroot', this.thumbnailFilename);
 		var templateDestination = this.themeLayout ? this.templateFilename : path.join('docroot', this.templateFilename);
 
-		var themedLayoutDestination = path.join('/layouttpl/custom/', this.layoutDirName);
-		var xmlDestination = path.join(instance.rootDir, 'src/WEB-INF/liferay-layout-templates.xml');
+		var xmlDestination = 'docroot/WEB-INF/liferay-layout-templates.xml';
 
-		this.templateThemeDestination = '';
-		this.thumbnailThemeDestination = '';
+		this.templateDestination = '';
 
 		this.fs.copy(this.templatePath('docroot/layout.png'), this.destinationPath(thumbnailDestination));
 		this.template('docroot/layout.tpl', templateDestination, this);
@@ -78,15 +76,16 @@ var layoutGeneratorPrototype = _.merge(liferayThemeGeneratorPrototype, {
 		if (!this.themeLayout) {
 			this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
 			this.template('_package.json', 'package.json', this);
-			this.template('docroot/WEB-INF/liferay-layout-templates.xml', 'docroot/WEB-INF/liferay-layout-templates.xml', this);
 			this.template('docroot/WEB-INF/liferay-plugin-package.properties', 'docroot/WEB-INF/liferay-plugin-package.properties', this);
 			this.template('gulpfile.js', 'gulpfile.js', this);
 		}
 		else {
-			this.templateThemeDestination = themedLayoutDestination;
-			this.thumbnailThemeDestination = themedLayoutDestination;
-			this.template('docroot/WEB-INF/liferay-layout-templates.xml', xmlDestination, this);
+			this.templateDestination = path.join('/layouttpl/custom/', this.layoutDirName);
+
+			xmlDestination = path.join(instance.rootDir, 'src/WEB-INF/liferay-layout-templates.xml');
 		}
+
+		this.template('docroot/WEB-INF/liferay-layout-templates.xml', xmlDestination, this);
 
 		if (!this.options['skip-creation']) {
 			var done = this.async();
